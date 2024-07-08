@@ -1,0 +1,139 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Waiter {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  email       String?
+  phoneNumber String?
+  restaurant  String?
+  tablesItems Tables[]
+}
+
+model Manager {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  email       String?
+  phoneNumber String?
+  restaurant  String?
+}
+
+model Cashier {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String?
+  email       String?
+  phoneNumber String?
+  restaurant  String?
+  billings    Billing[]
+}
+
+model Owner {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  email       String?
+  phoneNumber String?
+  name        String?
+}
+
+model Inventory {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  itemName   String?
+  quantity   Int?
+  alerts     Int?
+  restaurant String?
+}
+
+model Tables {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  tableNumber Int?
+  status      EnumTablesStatus?
+  waiter      Waiter?           @relation(fields: [waiterId], references: [id])
+  waiterId    String?
+}
+
+model Menu {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  qrCode     String?
+  menuItems  Json?
+  restaurant String?
+}
+
+model Sales {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  saleId      String?
+  date        DateTime?
+  totalAmount Float?
+  restaurant  String?
+}
+
+model KitchenStaff {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  email       String?
+  phoneNumber String?
+  restaurant  String?
+}
+
+model Billing {
+  id            String                    @id @default(cuid())
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  amount        Float?
+  paymentMethod EnumBillingPaymentMethod?
+  billNumber    String?
+  order         String?
+  cashier       Cashier?                  @relation(fields: [cashierId], references: [id])
+  cashierId     String?
+}
+
+model FoodMenu {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  itemName          String?
+  price             Float?
+  remainingQuantity Int?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
+
+enum EnumTablesStatus {
+  Option1
+}
+
+enum EnumBillingPaymentMethod {
+  Option1
+}
