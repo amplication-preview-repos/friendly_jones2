@@ -1,0 +1,95 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Role {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  description String?
+  users       User[]
+}
+
+model Table {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  status         EnumTableStatus?
+  assignedWaiter String?
+}
+
+model FoodMenu {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  name              String?
+  price             Float?
+  remainingQuantity Int?
+}
+
+model Sales {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  saleDate    DateTime?
+  totalAmount Float?
+  itemsSold   Json?
+}
+
+model Menu {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  qrCodeUrl      String?
+  availableItems Json?
+}
+
+model Billing {
+  id            String                    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  totalAmount   Float?
+  paymentMethod EnumBillingPaymentMethod?
+  status        EnumBillingStatus?
+}
+
+model Inventory {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  itemName               String?
+  quantity               Int?
+  lowStockAlertThreshold Int?
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+  role      Role?    @relation(fields: [roleId], references: [id])
+  roleId    String?  @db.ObjectId
+}
+
+enum EnumTableStatus {
+  Option1
+}
+
+enum EnumBillingPaymentMethod {
+  Option1
+}
+
+enum EnumBillingStatus {
+  Option1
+}
